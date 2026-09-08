@@ -227,25 +227,23 @@ impl Emitter {
         let mut candidates: Vec<String> = Vec::new();
 
         // Smooth continuation: c1 is the reflection of the previous cubic's c2.
-        if self.shorthands
-            && let Some(prev_c2) = self.prev_cubic_c2 {
+        // Nested (not a let-chain): let-chains need Rust 1.88+, but this
+        // workspace's floor is edition 2024's 1.85 (no `rust-version` pin).
+        #[allow(clippy::collapsible_if)]
+        if self.shorthands {
+            if let Some(prev_c2) = self.prev_cubic_c2 {
                 let reflection = PointF64 {
                     x: 2.0 * self.cur.x - prev_c2.x,
                     y: 2.0 * self.cur.y - prev_c2.y,
                 };
                 if approx(reflection, c1) {
-                    candidates.push(format!(
-                        "S{}",
-                        self.coord_list(&[c2, e])
-                    ));
+                    candidates.push(format!("S{}", self.coord_list(&[c2, e])));
                     if self.relative {
-                        candidates.push(format!(
-                            "s{}",
-                            self.delta_list(&[c2, e])
-                        ));
+                        candidates.push(format!("s{}", self.delta_list(&[c2, e])));
                     }
                 }
             }
+        }
 
         candidates.push(format!("C{}", self.coord_list(&[c1, c2, e])));
         if self.relative {

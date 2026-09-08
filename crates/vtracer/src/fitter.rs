@@ -162,7 +162,10 @@ fn append_compound(geoms: &mut Vec<FittedGeom>, compound: &CompoundPath) {
 
 /// A spline of `1 + 3n` points becomes a chain of `n` cubics sharing endpoints.
 fn spline_chain(points: &[PointF64]) -> Vec<[PointF64; 4]> {
-    if points.len() < 4 || !(points.len() - 1).is_multiple_of(3) {
+    // `is_multiple_of` needs Rust 1.86+; this workspace's floor is edition
+    // 2024's 1.85 (no `rust-version` pin), so use `%` instead.
+    #[allow(clippy::manual_is_multiple_of)]
+    if points.len() < 4 || (points.len() - 1) % 3 != 0 {
         return Vec::new();
     }
     let mut chain = Vec::with_capacity((points.len() - 1) / 3);
