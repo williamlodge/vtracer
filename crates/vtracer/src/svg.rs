@@ -227,8 +227,8 @@ impl Emitter {
         let mut candidates: Vec<String> = Vec::new();
 
         // Smooth continuation: c1 is the reflection of the previous cubic's c2.
-        if self.shorthands {
-            if let Some(prev_c2) = self.prev_cubic_c2 {
+        if self.shorthands
+            && let Some(prev_c2) = self.prev_cubic_c2 {
                 let reflection = PointF64 {
                     x: 2.0 * self.cur.x - prev_c2.x,
                     y: 2.0 * self.cur.y - prev_c2.y,
@@ -246,7 +246,6 @@ impl Emitter {
                     }
                 }
             }
-        }
 
         candidates.push(format!("C{}", self.coord_list(&[c1, c2, e])));
         if self.relative {
@@ -373,6 +372,7 @@ mod tests {
     use visioncortex::Color;
 
     #[test]
+    #[allow(clippy::approx_constant)]
     fn number_formatting() {
         assert_eq!(fmt_num(0.0, Some(2)), "0");
         assert_eq!(fmt_num(-0.0, Some(2)), "0");

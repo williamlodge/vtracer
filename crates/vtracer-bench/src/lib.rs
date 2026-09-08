@@ -73,7 +73,7 @@ fn dssim_score(a_rgb: &[u8], b_rgb: &[u8], w: usize, h: usize) -> f64 {
             .collect();
         d.create_image_rgb(&px, w, h).expect("dssim image")
     };
-    let (val, _) = d.compare(&to(a_rgb), &to(b_rgb));
+    let (val, _) = d.compare(&to(a_rgb), to(b_rgb));
     val.into()
 }
 
