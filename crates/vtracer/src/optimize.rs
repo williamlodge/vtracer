@@ -104,6 +104,9 @@ fn cleanup_subpath(sub: &SubPath) -> SubPath {
                 if approx_eq(last, p) {
                     continue; // zero-length
                 }
+                // Nested (not a let-chain): let-chains need Rust 1.88+, but this
+                // workspace's floor is edition 2024's 1.85 (no `rust-version` pin).
+                #[allow(clippy::collapsible_if)]
                 if let Some(PathCmd::LineTo(_)) = out.commands.last() {
                     if collinear(prev, last, p) {
                         *out.commands.last_mut().unwrap() = PathCmd::LineTo(p);
